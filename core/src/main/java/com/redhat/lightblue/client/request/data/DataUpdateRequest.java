@@ -62,6 +62,11 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public Operation getOperation() {
+        return Operation.UPDATE;
+    }
+
+    @Override
     public String getBody() {
         // http://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/data.html#update
         StringBuilder sb = new StringBuilder();
@@ -92,11 +97,6 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         sb.append("}");
 
         return sb.toString();
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return Operation.UPDATE.getPathParam();
     }
 
 }

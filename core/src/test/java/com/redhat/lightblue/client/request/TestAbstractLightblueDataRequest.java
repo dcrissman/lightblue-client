@@ -8,7 +8,7 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
     AbstractLightblueDataRequest testRequest = new AbstractLightblueDataRequest(entityName, entityVersion) {
 
         @Override
-        public String getOperationPathParam() {
+        public Operation getOperation() {
             return dataOperation;
         }
 
@@ -17,6 +17,7 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
             // TODO Auto-generated method stub
             return null;
         }
+
     };
 
     @Test

@@ -3,11 +3,6 @@ package com.redhat.lightblue.client.http.request;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.data.DataDeleteRequest;
-import com.redhat.lightblue.client.request.data.DataFindRequest;
-import com.redhat.lightblue.client.request.data.DataInsertRequest;
-import com.redhat.lightblue.client.request.data.DataSaveRequest;
-import com.redhat.lightblue.client.request.data.DataUpdateRequest;
 
 public class LightblueHttpDataRequest extends AbstractLightblueHttpRequest implements LightblueHttpRequest {
 
@@ -19,20 +14,20 @@ public class LightblueHttpDataRequest extends AbstractLightblueHttpRequest imple
 
     @Override
     public HttpRequestBase getRestRequest(String baseServiceURI) {
-        HttpRequestBase httpRequest = null;
-
-        if (request instanceof DataDeleteRequest) {
-            return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
-        } else if (request instanceof DataFindRequest) {
-            return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
-        } else if (request instanceof DataInsertRequest) {
-            return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
-        } else if (request instanceof DataSaveRequest) {
-            return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
-        } else if (request instanceof DataUpdateRequest) {
-            return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
+        switch (request.getOperation()) {
+            case DELETE:
+                return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
+            case FIND:
+                return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
+            case INSERT:
+                return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
+            case SAVE:
+                return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
+            case UPDATE:
+                return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
+            default:
+                throw new UnsupportedOperationException("Unknown Operation type: " + request.getOperationPathParam());
         }
-        return httpRequest;
     }
 
 }
