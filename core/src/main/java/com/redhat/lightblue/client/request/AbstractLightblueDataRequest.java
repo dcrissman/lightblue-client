@@ -21,6 +21,14 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         }
     }
 
+    public AbstractLightblueDataRequest() {
+        super();
+    }
+
+    public AbstractLightblueDataRequest(String entityName, String entityVersion) {
+        super(entityName, entityVersion);
+    }
+
     @Override
     public String getRestURI(String baseServiceURI) {
         StringBuilder requestURI = new StringBuilder();
