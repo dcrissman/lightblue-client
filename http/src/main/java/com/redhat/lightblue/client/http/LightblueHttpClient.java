@@ -108,7 +108,7 @@ public class LightblueHttpClient implements LightblueClient {
     public LightblueResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
         LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
         return callService(new LightblueHttpMetadataRequest(lightblueRequest)
-        .getRestRequest(configuration.getMetadataServiceURI()));
+                .getRestRequest(configuration.getMetadataServiceURI()));
     }
 
     /*
@@ -123,7 +123,7 @@ public class LightblueHttpClient implements LightblueClient {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
         try {
             return callService(new LightblueHttpDataRequest(lightblueRequest)
-            .getRestRequest(configuration.getDataServiceURI()));
+                    .getRestRequest(configuration.getDataServiceURI()));
         } catch (RuntimeException e) {
             throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
         }
