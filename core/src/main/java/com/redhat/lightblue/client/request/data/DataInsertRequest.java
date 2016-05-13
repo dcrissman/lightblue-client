@@ -7,18 +7,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataInsertRequest extends AbstractLightblueDataRequest {
+public class DataInsertRequest extends AbstractLightblueDataRequest implements HasExecution {
 
     private Projection projection;
     private Object[] objects;
     private Integer begin;
     private Integer maxResults;
+    private Execution execution;
 
     public DataInsertRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -63,6 +65,13 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public DataInsertRequest execution(Execution execution) {
+        this.execution = execution;
+
+        return this;
+    }
+
+    @Override
     public JsonNode getBodyJson() {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
         if (projection != null) {
@@ -76,6 +85,9 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
                 arr.add(JSON.toJsonNode(objects[i]));
             }
             node.set("data", arr);
+        }
+        if (execution != null) {
+            node.set("execution", execution.toJson());
         }
         appendRangeToJson(node, begin, maxResults);
         return node;
@@ -95,4 +107,10 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     public Operation getOperation() {
         return Operation.INSERT;
     }
+
+    @Override
+    public Execution getExecution() {
+        return execution;
+    }
+
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
@@ -13,13 +14,14 @@ import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
-public class DataFindRequest extends AbstractLightblueDataRequest {
+public class DataFindRequest extends AbstractLightblueDataRequest implements HasExecution {
 
     private Query queryExpression;
     private Projection projection;
     private Sort sort;
     private Integer begin;
     private Integer maxResults;
+    private Execution execution;
 
     public DataFindRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -90,6 +92,13 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public DataFindRequest execution(Execution execution) {
+        this.execution = execution;
+
+        return this;
+    }
+
+    @Override
     public JsonNode getBodyJson() {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
         if (queryExpression != null) {
@@ -100,6 +109,9 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         }
         if (sort != null) {
             node.set("sort", sort.toJson());
+        }
+        if (execution != null) {
+            node.set("execution", execution.toJson());
         }
         appendRangeToJson(node, begin, maxResults);
         return node;
@@ -118,5 +130,10 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     @Override
     public Operation getOperation() {
         return Operation.FIND;
+    }
+
+    @Override
+    public Execution getExecution() {
+        return execution;
     }
 }

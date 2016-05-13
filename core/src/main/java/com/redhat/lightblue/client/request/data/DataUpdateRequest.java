@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
@@ -12,13 +13,14 @@ import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
-public class DataUpdateRequest extends AbstractLightblueDataRequest {
+public class DataUpdateRequest extends AbstractLightblueDataRequest implements HasExecution {
 
     private Projection projection;
     private Update update;
     private Query query;
     private Integer begin;
     private Integer maxResults;
+    private Execution execution;
 
     public DataUpdateRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -70,6 +72,13 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         return this;
     }
 
+    @Override
+    public DataUpdateRequest execution(Execution execution) {
+        this.execution = execution;
+
+        return this;
+    }
+
     /**
      * @see #where(Query)
      */
@@ -92,6 +101,9 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         if (update != null) {
             node.set("update", update.toJson());
         }
+        if (execution != null) {
+            node.set("execution", execution.toJson());
+        }
         appendRangeToJson(node, begin, maxResults);
         return node;
     }
@@ -109,6 +121,11 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     @Override
     public Operation getOperation() {
         return Operation.UPDATE;
+    }
+
+    @Override
+    public Execution getExecution() {
+        return execution;
     }
 
 }

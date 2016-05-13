@@ -7,19 +7,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataSaveRequest extends AbstractLightblueDataRequest {
+public class DataSaveRequest extends AbstractLightblueDataRequest implements HasExecution {
 
     private Projection projection;
     private Object[] objects;
     private Boolean upsert;
     private Integer begin;
     private Integer maxResults;
+    private Execution execution;
 
     public DataSaveRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -65,6 +67,13 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         return this;
     }
 
+    @Override
+    public DataSaveRequest execution(Execution execution) {
+        this.execution = execution;
+
+        return this;
+    }
+
     public Boolean isUpsert() {
         return upsert;
     }
@@ -98,6 +107,9 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         if (upsert != null) {
             node.set("upsert", JsonNodeFactory.instance.booleanNode(upsert));
         }
+        if (execution != null) {
+            node.set("execution", execution.toJson());
+        }
         appendRangeToJson(node, begin, maxResults);
         return node;
     }
@@ -110,6 +122,11 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     @Override
     public Operation getOperation() {
         return Operation.SAVE;
+    }
+
+    @Override
+    public Execution getExecution() {
+        return execution;
     }
 
 }
