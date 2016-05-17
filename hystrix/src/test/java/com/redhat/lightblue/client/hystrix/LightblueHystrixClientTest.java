@@ -13,7 +13,7 @@ import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
@@ -33,13 +33,13 @@ public class LightblueHystrixClientTest {
 		boolean dataBulk = false;
 
 		@Override
-        public LightblueMetadataResponse metadata(LightblueRequest lightblueRequest) {
+        public LightblueMetadataResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
 			metadata = true;
 			return null;
 		}
 
 		@Override
-        public LightblueDataResponse data(LightblueRequest lightblueRequest) {
+        public LightblueDataResponse data(AbstractLightblueDataRequest lightblueRequest) {
 			data = true;
 			return null;
 		}

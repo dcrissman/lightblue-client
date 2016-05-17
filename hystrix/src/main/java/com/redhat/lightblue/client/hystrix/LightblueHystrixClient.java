@@ -9,7 +9,7 @@ import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.hystrix.graphite.ServoGraphiteSetup;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
@@ -25,9 +25,9 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
     protected class MetadataHystrixCommand extends HystrixCommand<LightblueMetadataResponse> {
-		private final LightblueRequest request;
+        private final AbstractLightblueMetadataRequest request;
 
-		public MetadataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
+        public MetadataHystrixCommand(AbstractLightblueMetadataRequest request, String groupKey, String commandKey) {
 			super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
 			this.request = request;
@@ -40,9 +40,9 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
     protected class DataHystrixCommand extends HystrixCommand<LightblueDataResponse> {
-		private final LightblueRequest request;
+		private final AbstractLightblueDataRequest request;
 
-		public DataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
+		public DataHystrixCommand(AbstractLightblueDataRequest request, String groupKey, String commandKey) {
 			super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
 			this.request = request;
@@ -188,12 +188,12 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	@Override
-    public LightblueMetadataResponse metadata(LightblueRequest lightblueRequest) {
+    public LightblueMetadataResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
 		return new MetadataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
 	}
 
 	@Override
-    public LightblueDataResponse data(LightblueRequest lightblueRequest) {
+    public LightblueDataResponse data(AbstractLightblueDataRequest lightblueRequest) {
 		return new DataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
 	}
 
